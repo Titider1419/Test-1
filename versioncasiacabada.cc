@@ -6,12 +6,15 @@ typedef vector< vector<char> > Matriu;
 typedef vector< vector<int> > Matriuent;
 
 void mostrar_tauler(Matriu &mat,unsigned int &fil, unsigned int &col, Matriuent &hor, Matriuent &ver, unsigned int &m){
-	cout << "  ";
+	cout << "    ";
 	for(unsigned int i = 0; i<col; ++i){
 		//inv: genera el nombre de columnes que hi ha( en fila )
-		cout << "  " << i+1;
+		if (i < col-1){
+			if (i<9) cout << i+1 << "  ";
+			else cout << i+1 << " ";
+		}
+		else cout << i+1 << " ";
 	}
-	cout << " ";
 	cout << endl;
 	cout << "    ";
 	for(unsigned int i = 0; i<col; ++i){
@@ -22,7 +25,6 @@ void mostrar_tauler(Matriu &mat,unsigned int &fil, unsigned int &col, Matriuent 
 	}
 	cout << endl;
 	for(unsigned int i = 0; i<fil; ++i){
-		
 		if (i+1<10) cout << " " << i+1 << " |";
 		//numero ini de la fila( columna)
 		else cout << i+1 << " |";
@@ -52,11 +54,20 @@ void mostrar_tauler(Matriu &mat,unsigned int &fil, unsigned int &col, Matriuent 
 	for(unsigned int j = 0; j<m; ++j){
 		//inv: max 
 		//inv: genera les piste de la part inferior
-		cout << "  ";
+		cout << "    ";
 		for(unsigned int i = 0; i<col; ++i){
 			//inv: columne, piste_ver
-			if (j < ver[i].size()) cout << "  " << ver[i][j];
-			else cout << "   ";
+			if (j < ver[i].size()){
+				if(i < col-1){
+					if(ver[i][j] < 10) cout << ver[i][j] << "  ";
+					else cout << ver[i][j] << " ";
+				}
+				else cout << ver[i][j];
+			}
+			else {
+				if (i < col-1) cout << "   ";
+				else cout << "  ";
+			}
 		}
 		cout << endl;
 	}
@@ -79,13 +90,18 @@ bool comprovacio(Matriu &mat,unsigned int &fil, unsigned int &col, Matriuent &ho
 			else if (mat[i][j] == '.'){
 				if (marcat){
 					if (cont != hor[i][k]) trobat = true;
-					++k;
-					cont = 0;
+					else {
+						++k;
+						cont = 0;
+						marcat = false;
+					}
 				}
 			}
-			++i;
+			++j;
 		}
-		++j;
+		if (cont != hor[i][k]) trobat = true;
+		k = 0;
+		++i;
 	}
 	i = 0;
 	k = 0;
@@ -100,14 +116,19 @@ bool comprovacio(Matriu &mat,unsigned int &fil, unsigned int &col, Matriuent &ho
 			}
 			else if (mat[j][i] == '.'){
 				if (marcat){
-					if (cont != ver[j][k]) trobat = true;
-					++k;
-					cont = 0;
+					if (cont != ver[i][k]) trobat = true;
+					else{
+						++k;
+						cont = 0;
+						marcat = false;
+					}
 				}
 			}
-			++i;
+			++j;
 		}
-		++j;
+		if (cont != ver[i][k]) trobat = true;
+		++i;
+		k = 0;
 	}
 	return not trobat;
 }
@@ -197,15 +218,15 @@ int main(){
 				 //valor del contador a 0
                 for (unsigned int j = 0; j <= columnes-1; ++j) {
                     tauler[i][j] = '.';
-                        }
+					}
                 }
 			contador=0;
 			}
-		
 		else if (operacio == 'S') mostrar_tauler(tauler, files, columnes, pistes_hor, pistes_ver, max);
 		else if (operacio == 'Z') Z = true;
 		if(comprovacio(tauler, files, columnes, pistes_hor, pistes_ver)) resolt = true;
 	}
+	mostrar_tauler(tauler, files, columnes, pistes_hor, pistes_ver, max);
 	if (resolt) cout << "Enhorabona! Has resolt el nonograma" << endl;
 	else cout << "Has sortit del joc. Fins aviat!" << endl;
 	cout<<"Nombre de moviments: "<<contador<<endl;
